@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
 	#validates :email, uniqueness: true
 	#validates_uniqueness_of :email
+	has_secure_password
+
 	validates :email, :uniqueness => { :case_sensitive => false }
 
 	belongs_to :user_priority_type

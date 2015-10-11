@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'therubyracer'
 gem 'mysql2', '~> 0.3.13'
+gem 'bcrypt'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
