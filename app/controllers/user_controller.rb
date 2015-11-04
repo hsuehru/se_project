@@ -15,9 +15,9 @@ class UserController < ApplicationController
 		params = get_register_params
 		user = User.new(params)
 		if user.save
-			@message[:result] = true
+			@message[:result] = "registe sucessful"
 		else
-			@message[:result] = false
+			@message[:result] = "registe failure"
 		end
 		render :json => @message.to_json
 	end
