@@ -7,6 +7,7 @@ class UserController < ApplicationController
 	def test
 		param = get_test_param
 		#@a = param.to_json
+		system('ls -l')
 		render :json => param.to_json
 	end
 
@@ -15,9 +16,9 @@ class UserController < ApplicationController
 		params = get_register_params
 		user = User.new(params)
 		if user.save
-			@message[:result] = "registe sucessful"
+			@message[:result] = "success"
 		else
-			@message[:result] = "registe failure"
+			@message[:result] = "failed"
 		end
 		render :json => @message.to_json
 	end
@@ -26,13 +27,13 @@ class UserController < ApplicationController
 		params = get_login_params
 		user = User.find_by(:email => params[:email])
 		if user == nil
-			@message[:result] = false
+			@message[:result] = "failed"
 			@message[:error_message] = "No User"
 		else
 			if user.authenticate(params[:password])
-				@message[:result] = true
+				@message[:result] = "success"
 			else
-				@message[:result] = false
+				@message[:result] = "failed"
 				@message[:error_message] = "Wrong password"
 			end
 		end
