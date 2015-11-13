@@ -2,6 +2,11 @@ Rails.application.routes.draw do
 	post 'user/test' => 'user#test'
 	post 'user/register' => 'user#register'
 	post 'user/login' => 'user#login'
+	post 'project/new' => 'project#new'
+
+
+	get 'project/list/:uid' => 'project#list'
+
 	get 'command/resetDB' => 'command/resetDB'
 
 	get 'user/test' => 'user#test'

@@ -1,16 +1,8 @@
-class UserController < ApplicationController
+class RequirementController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 	after_action :access_control_headers
 
 	before_action :new_hash
-
-	def test
-		param = get_test_param
-		
-		param = Project.where(:owner => 1)
-		#@a = param.to_json
-		render :json => param.to_json
-	end
 
 
 	def register
@@ -49,9 +41,10 @@ class UserController < ApplicationController
 		params.permit(:account,:password)
 	end
 
-	def get_register_params
-		params.permit(:email,:password,:name)
+	def get_require_params
+		params.permit(:name, :type, :descript, :version, :priority, :status, :memo)
 	end
+	
 	def get_login_params
 		params.permit(:email,:password)
 	end

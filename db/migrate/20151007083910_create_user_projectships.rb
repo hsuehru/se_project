@@ -6,5 +6,6 @@ class CreateUserProjectships < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+	add_index :user_projectships, [:user, :project], :unique => true
   end
 end

@@ -1,17 +1,31 @@
-class UserController < ApplicationController
+class ProjectController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 	after_action :access_control_headers
 
 	before_action :new_hash
 
-	def test
-		param = get_test_param
-		
-		param = Project.where(:owner => 1)
-		#@a = param.to_json
-		render :json => param.to_json
+	def new
+		params = get_project_params
+		project = Project.new
+		user = User.find(params[:uid])
+		project = user.projects.create(:name => params[:name], :descript => params[:descript])
+		#project.descript = params[:descript]
+		project.owner = user
+		#project.name = params[:name]
+		if project.save
+			@message[:result] = "success"
+		else
+			@message[:result] = "failed"
+		end
+		render :json => @message.to_json
 	end
-
+	def list
+		user = User.find(params[:uid])
+		projects = user.projects
+		@message[:result] = "success"
+		@message[:projects] = projects
+		render :json => @message.to_json
+	end
 
 	def register
 		params = get_register_params
@@ -47,6 +61,10 @@ class UserController < ApplicationController
   private
 	def get_test_param
 		params.permit(:account,:password)
+	end
+
+	def get_project_params
+		params.permit(:name, :descript, :uid)
 	end
 
 	def get_register_params
