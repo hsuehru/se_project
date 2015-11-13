@@ -4,6 +4,8 @@ class CreateRequirements < ActiveRecord::Migration
       t.string :name
       t.text :description
       t.integer :owner
+			t.string :version
+			t.text :memo
       #t.references :project, index: true, foreign_key: true
       t.references :project
       t.references :requirement_type

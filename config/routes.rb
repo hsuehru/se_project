@@ -3,9 +3,20 @@ Rails.application.routes.draw do
 	post 'user/register' => 'user#register'
 	post 'user/login' => 'user#login'
 	post 'project/new' => 'project#new'
+	get 'requirement/getPriorityType' => 'requirement#getPriorityType'
+	get 'requirement/getStatusType' => 'requirement#getStatusType'
+	get 'requirement/getRequirementType' => 'requirement#getRequirementType'
+	post 'requirement/new' => 'requirement#new'
 
 
-	get 'project/list/:uid' => 'project#list'
+
+
+
+
+
+	get 'project/getProjectListByUser/:uid' => 'project#getProjectListByUser'
+	get 'project/getUserListByProject/:uid' => 'project#getUserListByProject'
+	post 'project/addUserToProject' => 'project#addUserToProject'
 
 	get 'command/resetDB' => 'command/resetDB'
 

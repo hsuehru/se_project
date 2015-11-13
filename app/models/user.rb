@@ -10,5 +10,5 @@ class User < ActiveRecord::Base
 	has_many :requirements, :foreign_key => "owner"
 	has_many :own_projects, :class_name => "project", :foreign_key => "owner"
 	has_many :user_projectships
-	has_many :projects, :through => "user_projectships"
+	has_many :projects, -> {select(:id, :name)}, :through => "user_projectships"
 end

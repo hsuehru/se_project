@@ -37,6 +37,8 @@ ActiveRecord::Schema.define(version: 20151007083910) do
     t.string   "name",                limit: 255
     t.text     "description",         limit: 65535
     t.integer  "owner",               limit: 4
+    t.string   "version",             limit: 255
+    t.text     "memo",                limit: 65535
     t.integer  "project_id",          limit: 4
     t.integer  "requirement_type_id", limit: 4
     t.integer  "priority_type_id",    limit: 4
@@ -77,6 +79,7 @@ ActiveRecord::Schema.define(version: 20151007083910) do
   end
 
   add_index "user_projectships", ["project_id"], name: "index_user_projectships_on_project_id", using: :btree
+  add_index "user_projectships", ["user_id", "project_id"], name: "index_user_projectships_on_user_id_and_project_id", unique: true, using: :btree
   add_index "user_projectships", ["user_id"], name: "index_user_projectships_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|

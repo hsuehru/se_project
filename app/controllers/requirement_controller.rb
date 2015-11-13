@@ -5,10 +5,50 @@ class RequirementController < ApplicationController
 	before_action :new_hash
 
 
-	def register
-		params = get_register_params
-		user = User.new(params)
-		if user.save
+	def getPriorityType
+		priorities = PriorityType.select(:id,:name).all
+		if priorities.size == 0
+			@message[:result] = "failed"
+		else
+			@message[:result] = "success"
+			@message[:priority] = priorities
+		end
+		render :json => @message.to_json
+	end
+	def getStatusType
+		statuses = StatusType.select(:id,:name).all
+		if statuses.size == 0
+			@message[:result] = "failed"
+		else
+			@message[:result] = "success"
+			@message[:priority] = statuses
+		end
+		render :json => @message.to_json
+	end
+
+
+	def getRequirementType
+		requirementTypes = RequirementType.select(:id,:name).all
+		if requirementTypes.size == 0
+			@message[:result] = "failed"
+		else
+			@message[:result] = "success"
+			@message[:type] = requirementTypes
+		end
+		render :json => @message.to_json
+	end
+	def new
+		params = get_require_params
+		user = User.find(params[:uid])
+		project = Project.find(params[:pid])
+		
+		params.delete(:uid)
+		params.delete(:pid)
+		params[:owner] = user
+		params[:project] = project
+		requirement = Requirement.new(params)
+		
+		if requirement.save
 			@message[:result] = "success"
 		else
 			@message[:result] = "failed"
@@ -16,25 +56,6 @@ class RequirementController < ApplicationController
 		render :json => @message.to_json
 	end
 	
-	def login
-		params = get_login_params
-		user = User.find_by(:email => params[:email])
-		if user == nil
-			@message[:result] = "failed"
-			@message[:error_message] = "No User"
-		else
-			if user.authenticate(params[:password])
-				@message[:result] = "success"
-				@message[:name] = user.name
-				@message[:uid] = user.id
-			else
-				@message[:result] = "failed"
-				@message[:error_message] = "Wrong password"
-			end
-		end
-		render :json => @message.to_json
-	end
-
 
   private
 	def get_test_param
@@ -42,7 +63,7 @@ class RequirementController < ApplicationController
 	end
 
 	def get_require_params
-		params.permit(:name, :type, :descript, :version, :priority, :status, :memo)
+		params.permit(:name, :description, :version, :memo, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
 	end
 	
 	def get_login_params

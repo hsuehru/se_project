@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+PriorityType.create!(:name => "Low")
+PriorityType.create!(:name => "Medium")
+PriorityType.create!(:name => "High")
+RequirementType.create!(:name => "functional")
+RequirementType.create!(:name => "non-functional")
+StatusType.create!(:name => "open")
+StatusType.create!(:name => "under review")
+StatusType.create!(:name => "approved")

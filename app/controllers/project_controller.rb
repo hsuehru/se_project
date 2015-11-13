@@ -19,48 +19,55 @@ class ProjectController < ApplicationController
 		end
 		render :json => @message.to_json
 	end
-	def list
+	def getProjectListByUser
 		user = User.find(params[:uid])
 		projects = user.projects
 		@message[:result] = "success"
 		@message[:projects] = projects
 		render :json => @message.to_json
 	end
-
-	def register
-		params = get_register_params
-		user = User.new(params)
-		if user.save
-			@message[:result] = "success"
-		else
-			@message[:result] = "failed"
-		end
+	def getUserListByProject
+		project = Project.find(params[:uid])
+		users = project.users
+		@message[:result] = "success"
+		@message[:users] = users
 		render :json => @message.to_json
 	end
-	
-	def login
-		params = get_login_params
-		user = User.find_by(:email => params[:email])
-		if user == nil
-			@message[:result] = "failed"
-			@message[:error_message] = "No User"
-		else
-			if user.authenticate(params[:password])
-				@message[:result] = "success"
-				@message[:name] = user.name
-				@message[:uid] = user.id
-			else
+	def addUserToProject
+		params = get_add_user_to_project_params
+		project = Project.find(params[:pid])
+		owner = User.find(params[:uid])
+		if project.owner == owner
+			user = User.find_by(:email =>params[:add_email])
+			if user.nil?
 				@message[:result] = "failed"
-				@message[:error_message] = "Wrong password"
+	      @message[:message] = "User not exist."
+			else
+				user_project = UserProjectship.new
+				user_project.user = user
+				user_project.project = project
+				if user_project.save
+					@message[:result] = "success"
+				else
+					@message[:result] = "failed"
+					@message[:message] = "Add user to project failed."
+				end
 			end
+		else
+			@message[:result] = "failed"
+			@message[:message] = "you are not project owner."
 		end
 		render :json => @message.to_json
+
 	end
 
 
   private
 	def get_test_param
 		params.permit(:account,:password)
+	end
+	def get_add_user_to_project_params
+		params.permit(:add_email, :uid, :pid)
 	end
 
 	def get_project_params
