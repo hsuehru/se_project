@@ -37,6 +37,17 @@ class RequirementController < ApplicationController
 		end
 		render :json => @message.to_json
 	end
+	def getRequirementByProject
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "Project is not found."
+		else
+			@message[:result] = "success"
+			@message[:requirements] = project.requirements
+		end
+		render :json => @message.to_json
+	end
 	def new
 		params = get_require_params
 		user = User.find(params[:uid])
