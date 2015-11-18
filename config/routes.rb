@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 	get 'requirement/getStatusType' => 'requirement#getStatusType'
 	get 'requirement/getRequirementType' => 'requirement#getRequirementType'
 	get 'requirement/getRequirementByProject/:pid' => 'requirement#getRequirementByProject'
+	get 'requirement/getRequirementById/:rid' => 'requirement#getRequirementById'
 	post 'requirement/new' => 'requirement#new'
 
 

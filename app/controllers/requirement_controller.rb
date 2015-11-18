@@ -3,8 +3,6 @@ class RequirementController < ApplicationController
 	after_action :access_control_headers
 
 	before_action :new_hash
-
-
 	def getPriorityType
 		priorities = PriorityType.select(:id,:name).all
 		if priorities.size == 0
@@ -14,6 +12,7 @@ class RequirementController < ApplicationController
 			@message[:priority] = priorities
 		end
 		render :json => @message.to_json
+
 	end
 	def getStatusType
 		statuses = StatusType.select(:id,:name).all
@@ -21,7 +20,7 @@ class RequirementController < ApplicationController
 			@message[:result] = "failed"
 		else
 			@message[:result] = "success"
-			@message[:priority] = statuses
+			@message[:statuses] = statuses
 		end
 		render :json => @message.to_json
 	end
@@ -36,6 +35,18 @@ class RequirementController < ApplicationController
 			@message[:type] = requirementTypes
 		end
 		render :json => @message.to_json
+	end
+	def getRequirementById
+		requirement = Requirement.find_by(:id => params[:rid])
+		if requirement.nil?
+			@message[:result] = "failed"
+			@message[:message] = "requirement is not found."
+		else
+			@message[:result] = "success"
+			@message[:requirement] = requirement
+		end
+		render :json => requirement.to_json
+		
 	end
 	def getRequirementByProject
 		project = Project.find_by(:id => params[:pid])
