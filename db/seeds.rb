@@ -16,3 +16,9 @@ StatusType.create!(:name => "open")
 StatusType.create!(:name => "under review")
 StatusType.create!(:name => "approved")
 # ----------------------------------------------------
+UserProjectType.create!(:name => "Owner")
+UserProjectType.create!(:name => "Manager")
+UserProjectType.create!(:name => "Member")
+UserProjectType.create!(:name => "Customer")
+# ----------------------------------------------------
+User.create!(:name=>"ZZ" , :email => "j00064qaz123@gmail.com", :password => "a123456")

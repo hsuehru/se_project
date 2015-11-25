@@ -5,10 +5,10 @@ class User < ActiveRecord::Base
 
 	validates :email, :uniqueness => { :case_sensitive => false }
 
-	belongs_to :user_priority_type
 	has_many :test_cases, :foreign_key => "asigned_as"
 	has_many :requirements, :foreign_key => "owner"
 	has_many :own_projects, :class_name => "project", :foreign_key => "owner"
 	has_many :user_projectships
-	has_many :projects, -> {select(:id, :name, :descript)}, :through => "user_projectships"
+
+	has_many :projects, -> {select(:id, :name, :descript)}, :through => :user_projectships
 end

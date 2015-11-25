@@ -7,7 +7,6 @@ class CreateTestCases < ActiveRecord::Migration
 			t.text :input_data
 			t.text :expected_result
 			t.boolean :finished
-			t.references :requirement
 
       t.timestamps null: false
     end

@@ -8,10 +8,10 @@ class ProjectController < ApplicationController
 		params = get_project_params
 		project = Project.new
 		user = User.find(params[:uid])
-		project = user.projects.create(:name => params[:name], :descript => params[:descript])
+		project = user.projects.create(:name => params[:name], :description => params[:description])
 		#project.descript = params[:descript]
-		project.owner = user
 		#project.name = params[:name]
+		project.owner = user
 		if project.save
 			@message[:result] = "success"
 		else
@@ -34,6 +34,7 @@ class ProjectController < ApplicationController
 		render :json => @message.to_json
 	end
 	def addUserToProject
+		user_project_type = UserProjectType.select(:id,:name).find([2,3,4])
 		params = get_add_user_to_project_params
 		project = Project.find(params[:pid])
 		owner = User.find(params[:uid])
@@ -58,9 +59,7 @@ class ProjectController < ApplicationController
 			@message[:message] = "you are not project owner."
 		end
 		render :json => @message.to_json
-
 	end
-
 
   private
 	def get_test_param
@@ -71,7 +70,7 @@ class ProjectController < ApplicationController
 	end
 
 	def get_project_params
-		params.permit(:name, :descript, :uid)
+		params.permit(:name, :description, :uid)
 	end
 
 	def get_register_params
