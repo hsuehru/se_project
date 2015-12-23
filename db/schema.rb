@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151125121752) do
+ActiveRecord::Schema.define(version: 20151127080517) do
 
   create_table "priority_types", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -22,10 +22,6 @@ ActiveRecord::Schema.define(version: 20151125121752) do
   create_table "projects", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.text     "description", limit: 65535
-    t.text     "owner",       limit: 65535
-    t.text     "manager",     limit: 65535
-    t.text     "member",      limit: 65535
-    t.text     "customer",    limit: 65535
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
@@ -74,17 +70,18 @@ ActiveRecord::Schema.define(version: 20151125121752) do
     t.datetime "updated_at",                    null: false
   end
 
-  create_table "user_project_types", force: :cascade do |t|
+  create_table "user_project_priorities", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
   create_table "user_projectships", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "project_id", limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.integer  "user_id",                  limit: 4
+    t.integer  "project_id",               limit: 4
+    t.integer  "user_project_priority_id", limit: 4
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   add_index "user_projectships", ["project_id"], name: "index_user_projectships_on_project_id", using: :btree

@@ -3,10 +3,6 @@ class CreateProjects < ActiveRecord::Migration
     create_table :projects do |t|
       t.string :name
       t.text :description
-      t.text :owner
-      t.text :manager
-      t.text :member
-      t.text :customer
 
       t.timestamps null: false
     end

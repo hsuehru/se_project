@@ -6,18 +6,90 @@ class ProjectController < ApplicationController
 
 	def new
 		params = get_project_params
-		project = Project.new
 		user = User.find(params[:uid])
-		project = user.projects.create(:name => params[:name], :description => params[:description])
-		#project.descript = params[:descript]
-		#project.name = params[:name]
-		project.owner = user
-		if project.save
+		project = Project.new(:name => params[:name], :description => params[:description])
+		ups = UserProjectship.new
+		ups.project = project
+		ups.user = user
+		ups.user_project_priority = UserProjectPriority.find_by(:name => "Owner")
+		if ups.save
 			@message[:result] = "success"
 		else
 			@message[:result] = "failed"
 		end
 		render :json => @message.to_json
+	end
+
+	def update
+		params = get_update_project_params
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "The project doesn't exists."
+		else
+			project.name = params[:name]
+			project.description = params[:description]
+			if project.save
+				@message[:result] = "success"
+			else
+				@message[:result] = "failed"
+				@message[:message] = "Update failed."
+			end
+
+		end
+		render :json => @message.as_json
+	end
+
+	def delete
+		project = Project.find_by(:id => params[:pid])
+		user_projectships = UserProjectship.where(:project => project)
+
+		if user_projectships.size > 0
+			user_projectships.each do |user_projectship|
+				user_projectship.delete
+			end
+		end
+
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "project can not found."
+		else
+			if project.delete
+				@message[:result] = "success"
+			else
+				@message[:result] = "failed"
+				@message[:message] = "delete failed."
+			end
+		end
+
+		render :json => @message.as_json
+	end
+
+	# def delete
+	# 	params = get_delete_project_params
+	# 	project = User.find(1).projects.where(:id => params[:uid])
+	# 	User.find().projects.delete(project)
+	# end
+
+	def getOwnerProjectListByUserId
+		user = User.find_by(:id => params[:uid])
+		project_list = user.user_projectships.where(:user_project_priority => UserProjectPriority.find_by(:name => "Owner")).map{|ups| ups.project}
+		render :json => project_list.as_json
+	end
+	def getManagerProjectListByUserId
+		user = User.find_by(:id => params[:uid])
+		project_list = user.user_projectships.where(:user_project_priority => UserProjectPriority.find_by(:name => "Manager")).map{|ups| ups.project}
+		render :json => project_list.as_json
+	end
+	def getMemberProjectListByUserId
+		user = User.find_by(:id => params[:uid])
+		project_list = user.user_projectships.where(:user_project_priority => UserProjectPriority.find_by(:name => "Member")).map{|ups| ups.project}
+		render :json => project_list.as_json
+	end
+	def getCustomerProjectListByUserId
+		user = User.find_by(:id => params[:uid])
+		project_list = user.user_projectships.where(:user_project_priority => UserProjectPriority.find_by(:name => "Customer")).map{|ups| ups.project}
+		render :json => project_list.as_json
 	end
 	def getProjectListByUser
 		user = User.find(params[:uid])
@@ -33,25 +105,41 @@ class ProjectController < ApplicationController
 		@message[:users] = users
 		render :json => @message.to_json
 	end
+
+	def getProjectPriorityType
+		project_priority_types = UserProjectPriority.select(:id,:name).where("name != 'Owner'")
+		render :json => project_priority_types.as_json
+	end
+
 	def addUserToProject
-		user_project_type = UserProjectType.select(:id,:name).find([2,3,4])
 		params = get_add_user_to_project_params
+		user_project_priority = UserProjectPriority.find_by(:id => params[:priority_type_id])
+		#params.permit(:add_email, :uid, :pid, :priority_type_id)
 		project = Project.find(params[:pid])
-		owner = User.find(params[:uid])
-		if project.owner == owner
-			user = User.find_by(:email =>params[:add_email])
-			if user.nil?
+		user = User.find_by(:id => params[:uid])
+		is_owner = user.user_projectships.find_by(:project => project, :user_project_priority => UserProjectPriority.find_by(:name => "Owner"))
+
+		if !is_owner.nil?
+			add_user = User.find_by(:email =>params[:add_email])
+			if add_user.nil?
 				@message[:result] = "failed"
 	      @message[:message] = "User not exist."
 			else
 				user_project = UserProjectship.new
-				user_project.user = user
+				user_project.user = add_user
 				user_project.project = project
-				if user_project.save
-					@message[:result] = "success"
+				user_project.user_project_priority = user_project_priority
+				in_project = UserProjectship.find_by(:user => add_user , :project => project)
+				if in_project.nil?
+					if user_project.save
+						@message[:result] = "success"
+					else
+						@message[:result] = "failed"
+						@message[:message] = "Add user to project failed."
+					end
 				else
 					@message[:result] = "failed"
-					@message[:message] = "Add user to project failed."
+					@message[:message] = "The user has in the project."
 				end
 			end
 		else
@@ -62,23 +150,23 @@ class ProjectController < ApplicationController
 	end
 
   private
-	def get_test_param
-		params.permit(:account,:password)
-	end
 	def get_add_user_to_project_params
-		params.permit(:add_email, :uid, :pid)
+		params.permit(:add_email, :uid, :pid, :priority_type_id)
+	end
+
+	def get_update_project_params
+		params.permit(:pid, :name, :description)
+	end
+
+	def get_delete_project_params
+		params.permit(:pid, :uid)
 	end
 
 	def get_project_params
 		params.permit(:name, :description, :uid)
 	end
 
-	def get_register_params
-		params.permit(:email,:password,:name)
-	end
-	def get_login_params
-		params.permit(:email,:password)
-	end
+
 ########################################################################################################
 	def new_hash
 		@message = Hash.new

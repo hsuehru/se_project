@@ -3,6 +3,7 @@ class CreateUserProjectships < ActiveRecord::Migration
     create_table :user_projectships do |t|
       t.references :user, index: true, foreign_key: true
       t.references :project, index: true, foreign_key: true
+      t.integer :user_project_priority_id
       t.timestamps null: false
     end
   	add_index :user_projectships, [:user_id, :project_id], unique: true

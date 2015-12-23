@@ -45,9 +45,6 @@ class UserController < ApplicationController
 
 
   private
-	def get_test_param
-		params.permit(:account,:password)
-	end
 
 	def get_register_params
 		params.permit(:email,:password,:name)

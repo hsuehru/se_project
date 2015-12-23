@@ -77,20 +77,58 @@ class RequirementController < ApplicationController
 		end
 		render :json => @message.to_json
 	end
-	
 
-  private
-	def get_test_param
-		params.permit(:account,:password)
+	def update
+		params = get_update_require_params
+		user = User.find(params[:uid])
+		project = Project.find(params[:pid])
+		requirement = Requirement.find(params[:id])
+
+		params.delete(:id)
+		params.delete(:uid)
+		params.delete(:pid)
+
+		params[:owner] = user
+		params[:project] = project
+
+		if requirement.update(params)
+			@message[:result] = "success"
+		else
+			@message[:result] = "failed"
+		end
+		render :json => @message.to_json
+
+	end
+	def delete
+		requirement = Requirement.find_by(:id => params[:rid])
+		if requirement.nil?
+			@message[:result] = "failed"
+			@message[:message] = "requirement not found."
+		else
+			requirement_test_ships = RequirementTestCaseship.where(:requirement => r)
+			if requirement_test_ships.size > 0
+				requirement_test_ships.each do |requirement_test_ship|
+					requirement_test_ship.delete
+				end
+			end
+			if requirement.delete
+				@message[:result] = "success"
+			else
+				@message[:result] = "failed"
+				@message[:message] = "requirement delete failed."
+			end
+		end
+		render :json => @message.to_json
 	end
 
+  private
 	def get_require_params
 		params.permit(:name, :description, :version, :memo, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
 	end
-	
-	def get_login_params
-		params.permit(:email,:password)
+	def get_update_require_params
+		params.permit(:id, :name, :description, :version, :memo, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
 	end
+
 ########################################################################################################
 	def new_hash
 		@message = Hash.new

@@ -2,13 +2,43 @@ Rails.application.routes.draw do
 	post 'user/test' => 'user#test'
 	post 'user/register' => 'user#register'
 	post 'user/login' => 'user#login'
+
 	post 'project/new' => 'project#new'
+  post 'project/update' => 'project#update'
+	get 'project/delete/:pid' => 'project#delete'
+
+	get 'project/getOwnerProjectListByUserId/:uid' => 'project#getOwnerProjectListByUserId'
+	get 'project/getManagerProjectListByUserId/:uid' => 'project#getManagerProjectListByUserId'
+	get 'project/getMemberProjectListByUserId/:uid' => 'project#getMemberProjectListByUserId'
+	get 'project/getCustomerProjectListByUserId/:uid' => 'project#getCustomerProjectListByUserId'
+  get 'project/getProjectPriorityType' => 'project#getProjectPriorityType'
+
+	get 'project/getProjectListByUser/:uid' => 'project#getProjectListByUser'
+	get 'project/getUserListByProject/:uid' => 'project#getUserListByProject'
+	post 'project/addUserToProject' => 'project#addUserToProject'
+
+
+
 	get 'requirement/getPriorityType' => 'requirement#getPriorityType'
 	get 'requirement/getStatusType' => 'requirement#getStatusType'
 	get 'requirement/getRequirementType' => 'requirement#getRequirementType'
 	get 'requirement/getRequirementByProject/:pid' => 'requirement#getRequirementByProject'
 	get 'requirement/getRequirementById/:rid' => 'requirement#getRequirementById'
+	get 'requirement/delete/:rid' => 'requirement#delete'
+
+  get 'test_case/getTestCaseListByRequirementId/:rid' => 'test_case#getTestCaseListByRequirementId'
+	get 'test_case/getTestCaseByTestCaseId/:tid' => 'test_case#getTestCaseByTestCaseId'
+	get 'test_case/delete/:tid' => 'test_case#delete'
+	get 'test_case/deleteRequirementTestRelationship/:rid/:tid' => 'test_case#deleteRequirementTestRelationship'
+
+
+
 	post 'requirement/new' => 'requirement#new'
+	post 'requirement/update' => 'requirement#update'
+
+
+	post 'test_case/new' => 'test_case#new'
+	post 'test_case/update' => 'test_case#update'
 
 
 
@@ -16,9 +46,7 @@ Rails.application.routes.draw do
 
 
 
-	get 'project/getProjectListByUser/:uid' => 'project#getProjectListByUser'
-	get 'project/getUserListByProject/:uid' => 'project#getUserListByProject'
-	post 'project/addUserToProject' => 'project#addUserToProject'
+
 
 	get 'command/resetDB' => 'command/resetDB'
 
