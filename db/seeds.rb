@@ -22,3 +22,10 @@ UserProjectPriority.create!(:name => "Member")
 UserProjectPriority.create!(:name => "Customer")
 # ----------------------------------------------------
 User.create!(:name=>"ZZ" , :email => "j00064qaz123@gmail.com", :password => "a123456")
+User.create!(:name=>"YH" , :email => "user@user", :password => "123456")
+User.create!(:name=>"test_acc_1" , :email => "test1@test", :password => "123456")
+User.create!(:name=>"test_acc_2" , :email => "test2@test", :password => "123456")
+User.create!(:name=>"test_acc_3" , :email => "test3@test", :password => "123456")
+User.create!(:name=>"test_acc_4" , :email => "test4@test", :password => "123456")
+User.create!(:name=>"test_acc_5" , :email => "test5@test", :password => "123456")
+

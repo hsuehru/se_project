@@ -5,6 +5,21 @@ Rails.application.routes.draw do
 
 	post 'project/new' => 'project#new'
   post 'project/update' => 'project#update'
+	post 'project/changeUserPriority' => 'project#changeUserPriority'
+	post 'project/deleteUserFromProject' => 'project#deleteUserFromProject'
+
+
+
+	post 'comment/new' => 'comment#new'
+	post 'comment/update' => 'comment#update'
+	post 'comment/test' => 'comment#test'
+
+  get 'comment/delete/:cid' => 'comment#delete'
+  get 'comment/getCommentListByRequirementId/:rid' => 'comment#getCommentListByRequirementId'
+	get 'comment/delete/:tid' => 'comment#delete'
+
+
+
 	get 'project/delete/:pid' => 'project#delete'
 
 	get 'project/getOwnerProjectListByUserId/:uid' => 'project#getOwnerProjectListByUserId'
@@ -14,7 +29,7 @@ Rails.application.routes.draw do
   get 'project/getProjectPriorityType' => 'project#getProjectPriorityType'
 
 	get 'project/getProjectListByUser/:uid' => 'project#getProjectListByUser'
-	get 'project/getUserListByProject/:uid' => 'project#getUserListByProject'
+	get 'project/getUserListByProject/:pid' => 'project#getUserListByProject'
 	post 'project/addUserToProject' => 'project#addUserToProject'
 
 
@@ -25,20 +40,34 @@ Rails.application.routes.draw do
 	get 'requirement/getRequirementByProject/:pid' => 'requirement#getRequirementByProject'
 	get 'requirement/getRequirementById/:rid' => 'requirement#getRequirementById'
 	get 'requirement/delete/:rid' => 'requirement#delete'
+	get 'requirement/getRtoRRelationByProjectId/:pid' => 'requirement#getRtoRRelationByProjectId'
+	get 'requirement/getRequirementListByTestCaseId/:pid' => 'requirement#getRequirementListByTestCaseId'
+	get 'requirement/deleteRtoRRelationByProjectId/:pid' => 'requirement#deleteRtoRRelationByProjectId'
+
+
+
+
+
+
+
+
 
   get 'test_case/getTestCaseListByRequirementId/:rid' => 'test_case#getTestCaseListByRequirementId'
 	get 'test_case/getTestCaseByTestCaseId/:tid' => 'test_case#getTestCaseByTestCaseId'
 	get 'test_case/delete/:tid' => 'test_case#delete'
-	get 'test_case/deleteRequirementTestRelationship/:rid/:tid' => 'test_case#deleteRequirementTestRelationship'
+  get 'test_case/getTestCaseListByProjectId/:pid'=>'test_case#getTestCaseListByProjectId'
+
 
 
 
 	post 'requirement/new' => 'requirement#new'
 	post 'requirement/update' => 'requirement#update'
+  post 'requirement/newRtoRRelation' => 'requirement#newRtoRRelation'
 
 
 	post 'test_case/new' => 'test_case#new'
 	post 'test_case/update' => 'test_case#update'
+	post 'test_case/deleteRequirementTestRelationship' => 'test_case#deleteRequirementTestRelationship'
 
 
 

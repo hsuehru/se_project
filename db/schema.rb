@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151127080517) do
+ActiveRecord::Schema.define(version: 20151224063026) do
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "requirement_id", limit: 4
+    t.string   "name",           limit: 255
+    t.string   "comment",        limit: 255
+    t.string   "decision",       limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "priority_types", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -22,6 +31,14 @@ ActiveRecord::Schema.define(version: 20151127080517) do
   create_table "projects", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.text     "description", limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "requirement_requirementships", force: :cascade do |t|
+    t.integer  "project_id",      limit: 4
+    t.integer  "requirement1_id", limit: 4
+    t.integer  "requirement2_id", limit: 4
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
@@ -43,6 +60,7 @@ ActiveRecord::Schema.define(version: 20151127080517) do
     t.string   "name",                limit: 255
     t.text     "description",         limit: 65535
     t.integer  "owner",               limit: 4
+    t.integer  "handler",             limit: 4
     t.string   "version",             limit: 255
     t.text     "memo",                limit: 65535
     t.integer  "project_id",          limit: 4
@@ -59,9 +77,17 @@ ActiveRecord::Schema.define(version: 20151127080517) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "test_case_test_caseships", force: :cascade do |t|
+    t.integer  "test_case1_id", limit: 4
+    t.integer  "test_case2_id", limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
   create_table "test_cases", force: :cascade do |t|
     t.string   "name",            limit: 255
     t.text     "description",     limit: 65535
+    t.integer  "owner",           limit: 4
     t.integer  "asigned_as",      limit: 4
     t.text     "input_data",      limit: 65535
     t.text     "expected_result", limit: 65535

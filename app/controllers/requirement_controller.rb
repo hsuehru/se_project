@@ -105,7 +105,8 @@ class RequirementController < ApplicationController
 			@message[:result] = "failed"
 			@message[:message] = "requirement not found."
 		else
-			requirement_test_ships = RequirementTestCaseship.where(:requirement => r)
+			requirement_test_ships = RequirementTestCaseship.where(:requirement => requirement)
+
 			if requirement_test_ships.size > 0
 				requirement_test_ships.each do |requirement_test_ship|
 					requirement_test_ship.delete
@@ -121,12 +122,86 @@ class RequirementController < ApplicationController
 		render :json => @message.to_json
 	end
 
+	def newRtoRRelation
+		params = get_r_to_r_params
+		project = Project.find_by(:id => params[:pid])
+		requirement_1 = Requirement.find_by(:id => params[:r1id])
+		requirement_2 = Requirement.find_by(:id => params[:r2id])
+		rrship = RequirementRequirementship.new
+		rrship.project = project
+		rrship.requirement1 = requirement_1
+		rrship.requirement2 = requirement_2
+
+		if rrship.save
+			@message[:result] = "success"
+		else
+			@message[:result] = "failed"
+			@message[:message] = "Create requirement to requirement ship failed."
+		end
+
+		render :json => @message.to_json
+
+
+	end
+
+	def getRtoRRelationByProjectId
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "Project not found."
+		else
+			r_r_ships = RequirementRequirementship.select(:id,:project_id,:requirement1_id,:requirement2_id).where(:project => project).order("requirement1_id,requirement2_id")
+			@message[:result] = "success"
+			@message[:rr_relations] = r_r_ships
+		end
+		render :json => @message.to_json
+	end
+
+	def deleteRtoRRelationByProjectId
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "Project not found."
+		else
+			r_r_ships = RequirementRequirementship.where(:project => project)
+			if r_r_ships.nil?
+				@message[:result] = "failed"
+				@message[:message] = "relation not found."
+			else
+				r_r_ships.each do |r_r_ship|
+					r_r_ship.delete
+				end
+				@message[:result] = "success"
+			end
+		end
+		render :json => @message.to_json
+	end
+
+	def getRequirementListByTestCaseId
+		test_case = TestCase.find_by(:id => params[:pid])
+		if test_case.nil?
+			@message[:result] = "failed"
+			@message[:message] = "Test case not found."
+		else
+			requirement_test_case_ships  = RequirementTestCaseship.select(:requirement_id).where(:test_case => test_case)
+			requirement_list = Requirement.where(:id => requirement_test_case_ships)
+			@message[:result] = "success"
+			@message[:requirements] = requirement_list
+		end
+		render :json => @message.to_json
+	end
+
   private
 	def get_require_params
-		params.permit(:name, :description, :version, :memo, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
+		params.permit(:name, :description, :version, :memo, :handler, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
 	end
+
 	def get_update_require_params
-		params.permit(:id, :name, :description, :version, :memo, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
+		params.permit(:id, :name, :description, :version, :memo, :handler, :uid, :pid, :requirement_type_id, :priority_type_id, :status_type_id)
+	end
+
+	def get_r_to_r_params
+		params.permit(:pid,:r1id,:r2id)
 	end
 
 ########################################################################################################

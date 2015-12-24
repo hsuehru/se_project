@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UserProjectTypeTest < ActiveSupport::TestCase
+class RequirementRequirementshipTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

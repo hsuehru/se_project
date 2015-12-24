@@ -99,10 +99,30 @@ class ProjectController < ApplicationController
 		render :json => @message.to_json
 	end
 	def getUserListByProject
-		project = Project.find(params[:uid])
-		users = project.users
-		@message[:result] = "success"
-		@message[:users] = users
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "project not found."
+		else
+			user_projectships = UserProjectship.select(:user_id,:user_project_priority_id).where(:project => project).order("user_project_priority_id, created_at")
+			# users = project.users
+			users = Array.new
+			if !user_projectships.nil?
+				user_projectships.each do |user_project_ship|
+					user = {:id => user_project_ship.user.id,
+									:name => user_project_ship.user.name,
+									:priority_type_id => user_project_ship.user_project_priority.id,
+									:priority_type_name => user_project_ship.user_project_priority.name}
+					users.append(user)
+				end
+			end
+			@message[:result] = "success"
+			# @message[:users] = users
+
+			@message[:users] = users
+
+		end
+
 		render :json => @message.to_json
 	end
 
@@ -128,7 +148,12 @@ class ProjectController < ApplicationController
 				user_project = UserProjectship.new
 				user_project.user = add_user
 				user_project.project = project
-				user_project.user_project_priority = user_project_priority
+				if user_project_priority.nil?
+					user_project.user_project_priority = UserProjectPriority.find_by(:name => "Member")
+				else
+					user_project.user_project_priority = user_project_priority
+				end
+
 				in_project = UserProjectship.find_by(:user => add_user , :project => project)
 				if in_project.nil?
 					if user_project.save
@@ -139,7 +164,7 @@ class ProjectController < ApplicationController
 					end
 				else
 					@message[:result] = "failed"
-					@message[:message] = "The user has in the project."
+					@message[:message] = "The user already exists in project."
 				end
 			end
 		else
@@ -147,6 +172,50 @@ class ProjectController < ApplicationController
 			@message[:message] = "you are not project owner."
 		end
 		render :json => @message.to_json
+	end
+
+	def deleteUserFromProject
+		params = get_delete_user_from_project_params
+		project = Project.find_by(:id =>  params[:pid])
+		user = User.find_by(:id =>  params[:uid])
+
+		user_project_ship = UserProjectship.find_by(:project => project, :user => user)
+
+		if user_project_ship.nil?
+			@message[:result] = "failed"
+			@message[:message] = "user not exists project."
+		else
+			if user_project_ship.delete
+				@message[:result] = "success"
+			else
+				@message[:result] = "failed"
+				@message[:message] = "delete failed."
+			end
+		end
+		render :json => @message.to_json
+	end
+
+	def changeUserPriority
+		params = get_change_user_priority_params
+		project = Project.find_by(:id =>  params[:pid])
+		user = User.find_by(:id =>  params[:uid])
+		priority_type = UserProjectPriority.find_by(:id => params[:priority_type_id])
+		user_project_ship = UserProjectship.find_by(:project => project, :user => user)
+		if user_project_ship.nil?
+			@message[:result] = "failed"
+			@message[:message] = "user not exists project."
+		else
+			user_project_ship.user_project_priority = priority_type
+			if user_project_ship.save
+				@message[:result] = "success"
+			else
+				@message[:result] = "failed"
+				@message[:message] = "change priority failed."
+			end
+		end
+
+		render :json => @message.to_json
+
 	end
 
   private
@@ -165,7 +234,12 @@ class ProjectController < ApplicationController
 	def get_project_params
 		params.permit(:name, :description, :uid)
 	end
-
+	def get_delete_user_from_project_params
+		params.permit(:pid, :uid)
+	end
+	def get_change_user_priority_params
+		params.permit(:pid ,:uid, :priority_type_id)
+	end
 
 ########################################################################################################
 	def new_hash

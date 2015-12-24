@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UserPriorityTypeTest < ActiveSupport::TestCase
+class CommentTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

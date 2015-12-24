@@ -3,6 +3,7 @@ class CreateTestCases < ActiveRecord::Migration
     create_table :test_cases do |t|
       t.string :name
       t.text :description
+      t.integer :owner
 			t.integer :asigned_as
 			t.text :input_data
 			t.text :expected_result
