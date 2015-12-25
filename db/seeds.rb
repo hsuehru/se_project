@@ -9,12 +9,14 @@ PriorityType.create!(:name => "Low")
 PriorityType.create!(:name => "Medium")
 PriorityType.create!(:name => "High")
 # ----------------------------------------------------
-RequirementType.create!(:name => "functional")
-RequirementType.create!(:name => "non-functional")
+RequirementType.create!(:name => "Functional")
+RequirementType.create!(:name => "Non-functional")
 # ----------------------------------------------------
-StatusType.create!(:name => "open")
-StatusType.create!(:name => "under review")
-StatusType.create!(:name => "approved")
+StatusType.create!(:name => "Open")
+StatusType.create!(:name => "Under review")
+StatusType.create!(:name => "Approved")
+StatusType.create!(:name => "Not approved")
+
 # ----------------------------------------------------
 UserProjectPriority.create!(:name => "Owner")
 UserProjectPriority.create!(:name => "Manager")

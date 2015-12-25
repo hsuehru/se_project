@@ -43,6 +43,8 @@ Rails.application.routes.draw do
 	get 'requirement/getRtoRRelationByProjectId/:pid' => 'requirement#getRtoRRelationByProjectId'
 	get 'requirement/getRequirementListByTestCaseId/:pid' => 'requirement#getRequirementListByTestCaseId'
 	get 'requirement/deleteRtoRRelationByProjectId/:pid' => 'requirement#deleteRtoRRelationByProjectId'
+	get 'requirement/getNoAssociatedRequirementByProjectId/:pid' => 'requirement#getNoAssociatedRequirementByProjectId'
+
 
 
 
@@ -57,6 +59,13 @@ Rails.application.routes.draw do
 	get 'test_case/delete/:tid' => 'test_case#delete'
   get 'test_case/getTestCaseListByProjectId/:pid'=>'test_case#getTestCaseListByProjectId'
 
+	get 'test_case/getRtoTRelationByProjectId/:pid'=>'test_case#getRtoTRelationByProjectId'
+	get 'test_case/deleteRtoTRelationByProjectId/:pid'=>'test_case#deleteRtoTRelationByProjectId'
+	get 'test_case/getNoAssociatedTestCaseByProjectId/:pid'=>'test_case#getNoAssociatedTestCaseByProjectId'
+
+
+
+
 
 
 
@@ -68,6 +77,9 @@ Rails.application.routes.draw do
 	post 'test_case/new' => 'test_case#new'
 	post 'test_case/update' => 'test_case#update'
 	post 'test_case/deleteRequirementTestRelationship' => 'test_case#deleteRequirementTestRelationship'
+	post 'test_case/newRtoTRelation' => 'test_case#newRtoTRelation'
+
+
 
 
 

@@ -6,11 +6,14 @@ class CommentController < ApplicationController
   def new
     params = get_new_comment_params
     requirement = Requirement.find_by(:id => params[:rid])
+    user = User.find_by(:id => params[:uid])
     if requirement.nil?
       @message[:result] = "failed"
       @message[:message] = "Requirement not found."
     else
       params.delete(:rid)
+      params.delete(:uid)
+      params[:user] = user
       comment = Comment.new(params)
       comment.requirement = requirement
       if comment.save
@@ -26,11 +29,14 @@ class CommentController < ApplicationController
   def update
     params = get_update_comment_params
     comment = Comment.find_by(:id => params[:id])
+    user = User.find_by(:id => params[:uid])
     if comment.nil?
       @message[:result] = "failed"
       @message[:message] = "Comment not found."
     else
       params.delete(:id)
+      params.delete(:uid)
+      params[:user] = user
       if comment.update(params)
         @message[:result] = "success"
       else
@@ -62,7 +68,7 @@ class CommentController < ApplicationController
         @message[:message] = "comment delete failed."
       end
     end
-    render :json => @message.to_json
+    render :json => @message.as_json
   end
 
   def getCommentListByRequirementId
@@ -76,14 +82,14 @@ class CommentController < ApplicationController
       @message[:result] = "success"
       @message[:comment_list] = comment_list
     end
-    render :json => @message.to_json
+    render :json => @message.to_json(include: [:user,:requirement],except: [:updated_at])
   end
 private
   def get_new_comment_params
-    params.permit(:rid, :name, :comment, :decision)
+    params.permit(:rid, :uid,:comment, :decision)
   end
   def get_update_comment_params
-    params.permit(:id, :name, :comment, :decision)
+    params.permit(:id, :uid,:comment, :decision)
   end
 
   def get_test

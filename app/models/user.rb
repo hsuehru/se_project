@@ -11,5 +11,7 @@ class User < ActiveRecord::Base
 
 	has_many :user_projectships
 
+	has_many :comments
+
 	has_many :projects, -> {select(:id, :name, :description)}, :through => :user_projectships
 end

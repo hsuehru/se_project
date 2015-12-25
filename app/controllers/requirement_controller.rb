@@ -57,17 +57,20 @@ class RequirementController < ApplicationController
 			@message[:result] = "success"
 			@message[:requirements] = project.requirements
 		end
-		render :json => @message.to_json
+		render :json => @message.as_json(include: [:priority_type, :status_type,:requirement_type,:project],except: [:updated_at])
 	end
 	def new
 		params = get_require_params
-		user = User.find(params[:uid])
-		project = Project.find(params[:pid])
+		user = User.find_by(:id =>params[:uid])
+		project = Project.find_by(:id => params[:pid])
+		handler = User.find_by(:id => params[:handler])
 		
 		params.delete(:uid)
 		params.delete(:pid)
+		params.delete(:handler)
 		params[:owner] = user
 		params[:project] = project
+		params[:handler] = handler
 		requirement = Requirement.new(params)
 		
 		if requirement.save
@@ -82,14 +85,17 @@ class RequirementController < ApplicationController
 		params = get_update_require_params
 		user = User.find(params[:uid])
 		project = Project.find(params[:pid])
+		handler = User.find_by(:id => params[:handler])
 		requirement = Requirement.find(params[:id])
 
 		params.delete(:id)
 		params.delete(:uid)
 		params.delete(:pid)
+		params.delete(:handler)
 
 		params[:owner] = user
 		params[:project] = project
+		params[:handler] = handler
 
 		if requirement.update(params)
 			@message[:result] = "success"
@@ -120,6 +126,24 @@ class RequirementController < ApplicationController
 			end
 		end
 		render :json => @message.to_json
+	end
+
+
+	def getNoAssociatedRequirementByProjectId
+		project = Project.find_by(:id => params[:pid])
+		if project.nil?
+			@message[:result] = "failed"
+			@message[:message] = "project not found."
+		else
+			requirement = RequirementRequirementship.where(:project => project)
+			requirement_list = Requirement.where(
+					"id not in(?)",requirement.map{|r| r.requirement1}).where(
+					"id not in(?)",requirement.map{|r| r.requirement2})
+			@message[:result] = "success"
+			@message[:requirement_list] = requirement_list
+		end
+		render :json => @message.as_json(include: [:priority_type, :status_type,:requirement_type,:project],except: [:updated_at])
+
 	end
 
 	def newRtoRRelation
@@ -157,6 +181,8 @@ class RequirementController < ApplicationController
 		render :json => @message.to_json
 	end
 
+
+
 	def deleteRtoRRelationByProjectId
 		project = Project.find_by(:id => params[:pid])
 		if project.nil?
@@ -188,7 +214,7 @@ class RequirementController < ApplicationController
 			@message[:result] = "success"
 			@message[:requirements] = requirement_list
 		end
-		render :json => @message.to_json
+		render :json => @message.as_json(include: [:priority_type, :status_type,:requirement_type,:project],except: [:updated_at])
 	end
 
   private

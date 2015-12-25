@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20151224063026) do
 
   create_table "comments", force: :cascade do |t|
     t.integer  "requirement_id", limit: 4
-    t.string   "name",           limit: 255
+    t.integer  "user_id",        limit: 4
     t.string   "comment",        limit: 255
     t.string   "decision",       limit: 255
     t.datetime "created_at",                 null: false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20151224063026) do
   end
 
   create_table "requirement_test_caseships", force: :cascade do |t|
+    t.integer  "project_id",     limit: 4
     t.integer  "requirement_id", limit: 4
     t.integer  "test_case_id",   limit: 4
     t.datetime "created_at",               null: false
@@ -87,6 +88,7 @@ ActiveRecord::Schema.define(version: 20151224063026) do
   create_table "test_cases", force: :cascade do |t|
     t.string   "name",            limit: 255
     t.text     "description",     limit: 65535
+    t.integer  "project_id",      limit: 4
     t.integer  "owner",           limit: 4
     t.integer  "asigned_as",      limit: 4
     t.text     "input_data",      limit: 65535
